@@ -1,0 +1,201 @@
+
+:root {
+  /* --- Color: neutral gray scale (50 = lightest, 950 = darkest) --- */
+  --gray-50:  #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --gray-950: #030712;
+
+  /* --- Color: brand accent (replace with your project color) --- */
+  --accent-light: #60a5fa;
+  --accent:       #3b82f6;
+  --accent-dark:  #2563eb;
+
+  /* --- Color: feedback states --- */
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger:  #dc2626;
+
+  /* --- Semantic colors: reference these in your components, not
+         the raw scale above. Remap them for dark mode in one place. --- */
+  --color-bg:          var(--gray-50);
+  --color-surface:     #ffffff;
+  --color-text:        var(--gray-900);
+  --color-text-muted:  var(--gray-500);
+  --color-border:      var(--gray-200);
+  --color-link:        var(--accent-dark);
+
+  /* --- Typography: families (swap these per project) --- */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+  /* --- Typography: size scale (~1.25 "major third" ratio) --- */
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.25rem;   /* 20px */
+  --text-xl:   1.563rem;  /* 25px */
+  --text-2xl:  1.953rem;  /* 31px */
+  --text-3xl:  2.441rem;  /* 39px */
+  --text-4xl:  3.052rem;  /* 49px */
+
+  /* --- Typography: weights & line-heights --- */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold:   700;
+  --leading-tight: 1.1;
+  --leading-normal: 1.5;
+  --leading-loose: 1.75;
+
+  /* --- Spacing scale (4px base, used for margin/padding/gap) --- */
+  --space-1:  0.25rem;  /* 4px  */
+  --space-2:  0.5rem;   /* 8px  */
+  --space-3:  0.75rem;  /* 12px */
+  --space-4:  1rem;     /* 16px */
+  --space-5:  1.5rem;   /* 24px */
+  --space-6:  2rem;     /* 32px */
+  --space-7:  3rem;     /* 48px */
+  --space-8:  4rem;     /* 64px */
+  --space-9:  6rem;     /* 96px */
+
+  /* --- Border radius --- */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   1rem;
+  --radius-full: 9999px;
+
+  /* --- Shadows (elevation) --- */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* --- Transitions --- */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+
+  /* --- Layout --- */
+  --content-width: 70ch;     /* readable max line length */
+  --container-width: 1280px; /* max page width */
+
+  /* --- z-index scale (named so you stop guessing 9999) --- */
+  --z-base:     0;
+  --z-dropdown: 10;
+  --z-sticky:   20;
+  --z-overlay:  30;
+  --z-modal:    40;
+  --z-toast:    50;
+}
+
+/* ---------------------------------------------------------
+   DARK MODE
+   Only the semantic tokens flip. Everything that references
+   them updates automatically. Delete if you don't need it.
+   --------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:         var(--gray-950);
+    --color-surface:    var(--gray-900);
+    --color-text:       var(--gray-100);
+    --color-text-muted: var(--gray-400);
+    --color-border:     var(--gray-800);
+    --color-link:       var(--accent-light);
+  }
+}
+
+/* =========================================================
+   RESET (now consuming the tokens above)
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  line-height: var(--leading-normal);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+p,
+li,
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+  padding: 0;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration-skip-ink: auto;
+}
+
+#root,
+#__next {
+  isolation: isolate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
