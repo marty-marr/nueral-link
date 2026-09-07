@@ -1,0 +1,246 @@
+/* =============================================================
+   1 · RESET  (lowest priority — easy to override everywhere)
+   ============================================================= */
+@layer reset {
+
+    /* Border-box is the single best ergonomics fix in CSS:
+       padding + border count *inside* the declared width. */
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    /* Wipe inherited margins so every gap is a decision, not a default. */
+    * {
+        margin: 0;
+    }
+
+    /* Backgrounds shouldn't tile by default — you override that far
+       more often than you rely on it. */
+    *:where(:not(fieldset, progress, meter)) {
+        background-repeat: no-repeat;
+        background-origin: border-box;
+    }
+
+    html {
+        /* Allow % heights to resolve, and stop mobile Safari/Chrome from
+           silently inflating your type. */
+        block-size: 100%;
+        -webkit-text-size-adjust: none;
+        text-size-adjust: none;
+    }
+
+    /* Smooth scroll + keyword-size animation only when motion is welcome. */
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+            interpolate-size: allow-keywords; /* animate to auto / fit-content */
+        }
+    }
+
+    body {
+        min-height: 100vh;
+        min-height: 100svh;          /* dynamic viewport: respects mobile chrome */
+        line-height: 1.5;            /* WCAG-friendly body rhythm */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Media behaves like blocks and never overflows its container. */
+    img, picture, video, canvas, svg {
+        display: block;
+        max-width: 100%;
+    }
+
+    /* Broken images degrade gracefully instead of shouting. */
+    img {
+        font-style: italic;
+    }
+
+    /* Form controls inherit your type instead of the browser's. */
+    input, button, textarea, select {
+        font: inherit;
+        color: inherit;
+        letter-spacing: inherit;
+    }
+
+    /* A textarea with no rows shouldn't be a tiny sliver. */
+    textarea:not([rows]) {
+        min-height: 8em;
+    }
+
+    /* Long words / URLs wrap instead of blowing out the layout,
+       and headings/paragraphs wrap intelligently. */
+    p, h1, h2, h3, h4, h5, h6, li, dd, dt, blockquote, figcaption {
+        overflow-wrap: break-word;
+    }
+    p, li, figcaption {
+        text-wrap: pretty;   /* avoids ugly single-word last lines */
+    }
+    h1, h2, h3, h4, h5, h6 {
+        text-wrap: balance;  /* even line lengths on headings */
+        line-height: 1.1;
+    }
+
+    /* Keep list semantics for screen readers — only opt out when
+       you explicitly mark a list as role="list". */
+    ul[role='list'], ol[role='list'] {
+        list-style: none;
+        padding: 0;
+    }
+
+    /* Anchored jumps don't slam content against the top edge. */
+    :target {
+        scroll-margin-block: 5ex;
+    }
+
+    /* React / Next roots get their own stacking context so portals,
+       modals, and z-index stay predictable. */
+    #root, #__next {
+        isolation: isolate;
+    }
+}
+
+/* =============================================================
+   2 · TOKENS  (the locked CyberKit system — single source of truth)
+   ============================================================= */
+@layer tokens {
+    :root {
+        color-scheme: dark;
+
+        /* --- Core palette --- */
+        --ck-magenta:  #FF2E97;   /* primary / action        */
+        --ck-cyan:     #00E0FF;   /* secondary / info        */
+        --ck-canvas:   #0A0E1B;   /* app background          */
+        --ck-panel:    rgba(17, 23, 38, 0.74); /* frosted glass */
+
+        /* --- Ink & structure --- */
+        --ck-ink:      #E7ECF6;   /* primary text            */
+        --ck-muted:    #75839B;   /* labels / secondary text */
+        --ck-line:     rgba(255, 255, 255, 0.08); /* hairlines */
+
+        /* --- Type --- */
+        --ck-font-sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --ck-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+        /* Fluid-ish type scale (rem-based, 1rem = 16px root) */
+        --ck-text-xs:   0.75rem;
+        --ck-text-sm:   0.875rem;
+        --ck-text-base: 1rem;
+        --ck-text-lg:   1.25rem;
+        --ck-text-xl:   1.75rem;
+        --ck-text-2xl:  2.5rem;
+        --ck-text-3xl:  clamp(2rem, 5vw, 3.25rem);
+
+        /* --- Spacing scale --- */
+        --ck-space-1: 0.25rem;
+        --ck-space-2: 0.5rem;
+        --ck-space-3: 0.75rem;
+        --ck-space-4: 1rem;
+        --ck-space-6: 1.5rem;
+        --ck-space-8: 2rem;
+        --ck-space-12: 3rem;
+
+        /* --- Signature rules, as tokens --- */
+        --ck-radius-panel:  0;      /* panels are square, framed by brackets */
+        --ck-radius-button: 6px;    /* buttons round to 6px                 */
+        --ck-radius-badge:  2px;    /* badges almost-sharp                  */
+        --ck-blur:          3px;    /* frosted-panel backdrop blur          */
+        --ck-bracket:       var(--ck-magenta); /* mandatory corner brackets */
+        --ck-glow-magenta:  0 0 16px rgba(255, 46, 151, 0.5);
+        --ck-glow-cyan:     0 0 14px rgba(0, 224, 255, 0.45);
+        --ck-focus-ring:    var(--ck-cyan);
+    }
+}
+
+/* =============================================================
+   3 · BASE  (branded defaults — this is what makes it feel "you")
+   ============================================================= */
+@layer base {
+
+    body {
+        background-color: var(--ck-canvas);
+        color: var(--ck-ink);
+        font-family: var(--ck-font-sans);
+        font-size: var(--ck-text-base);
+        /* Flat canvas — no grid background, per the CyberKit spec. */
+    }
+
+    h1 { font-size: var(--ck-text-3xl); }
+    h2 { font-size: var(--ck-text-2xl); }
+    h3 { font-size: var(--ck-text-xl); }
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    /* Technical text is monospace by default — labels, values, code. */
+    code, kbd, samp, pre {
+        font-family: var(--ck-font-mono);
+        font-size: 0.95em;
+    }
+
+    /* Links: magenta at rest, cyan on hover — the two brand accents. */
+    a {
+        color: var(--ck-magenta);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.18em;
+        transition: color 120ms ease;
+    }
+    a:hover { color: var(--ck-cyan); }
+
+    strong, b { font-weight: 600; }
+    small { color: var(--ck-muted); font-size: var(--ck-text-sm); }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--ck-line);
+    }
+
+    /* Selection uses the primary accent — a small personal signature. */
+    ::selection {
+        background: var(--ck-magenta);
+        color: var(--ck-canvas);
+    }
+
+    /* Visible, on-brand keyboard focus (accessibility floor). */
+    :focus-visible {
+        outline: 2px solid var(--ck-focus-ring);
+        outline-offset: 2px;
+    }
+
+    /* Themed scrollbars to finish the look. */
+    * {
+        scrollbar-color: var(--ck-muted) transparent;
+        scrollbar-width: thin;
+    }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+        background: rgba(117, 131, 155, 0.5);
+        border-radius: 6px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--ck-muted); }
+}
+
+.code-window {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ck-muted);
+    width: 650px;
+}
+
+.code-matrix-numbers {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 0.5rem;
+    place-items: center;
+    width: 600px;
+    height: 600px;
+    padding: 1rem;
+
+
+}
+
+
