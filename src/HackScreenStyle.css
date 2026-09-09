@@ -244,3 +244,12 @@
 }
 
 
+.cell {
+    cursor: pointer;
+}
+
+.cell.active {
+    background: var(--ck-magenta);
+}
+
+
