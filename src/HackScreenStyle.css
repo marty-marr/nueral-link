@@ -230,21 +230,27 @@
     width: 650px;
 }
 
-.code-matrix-numbers {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(6, 1fr);
-    gap: 0.5rem;
-    place-items: center;
-    width: 600px;
-    height: 600px;
-    padding: 1rem;
-
+.breach-panels {
+    display: flex;
+    gap: 4rem;
+    align-items: flex-start;
 
 }
 
+.code-matrix-numbers {
+    display: flex;
+    flex-direction: column; /* stack the ROWS vertically */
+    gap: 8px;
+}
+
+.code-matrix-row {
+    display: flex;
+    flex-direction: row; /* lay cells within a row out horizontally */
+    gap: 8px;
+}
 
 .cell {
+    padding: 16px 8px;
     cursor: pointer;
 }
 
@@ -252,4 +258,54 @@
     background: var(--ck-magenta);
 }
 
+.cell.used {
+    color: var(--ck-magenta);
+    background-color: var(--ck-muted);
+    font-weight: bold;
+}
+
+.cell.selectable {
+    cursor: pointer;
+    outline: 1px solid var(--ck-muted);
+}
+
+.cell.selectable:hover {
+    background-color: var(--ck-muted);
+}
+
+.hack-sequence span {
+    margin-right: 6px;
+    color: #ffffff;
+}
+
+.hack-sequence span.matched {
+    color: #00e5ff;
+    text-shadow: 0 0 6px #00e5ff;
+}
+
+.hack-item.completed .hack-sequence span {
+    color: #7CFC00; /* green once fully done, like a checkmark state */
+}
+
+.buffer {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px; /* space before the panels below */
+}
+
+.buffer-slot {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #d4ff00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d4ff00;
+}
+
+.buffer-slot.filled {
+    background-color: rgba(0, 229, 255, 0.15);
+    border-color: #00e5ff;
+    color: #00e5ff;
+}
 

@@ -275,3 +275,7 @@
   background: linear-gradient(90deg, #bfffff 0%, #ff8bc5 100%);
   transition: width 0.1s linear;
 }
+
+.code-window {
+  display: flex;
+}
