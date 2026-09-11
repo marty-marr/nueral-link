@@ -28,7 +28,7 @@ export function BreachProtocol({ grid }: BreachProtocolProps) {
                     />
                 </div>
 
-                <div className="hack-window">
+                <div className="sequence-window">
                     <h2 className="hack-window-title">Sequence Required to Upload</h2>
                     <HackSequenceList hacks={hacks} bufferValues={buffer.map((c) => c.value)} completedHacks={completedHacks} />
                 </div>

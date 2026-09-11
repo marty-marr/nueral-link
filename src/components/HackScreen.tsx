@@ -8,10 +8,12 @@ const codeMatrixGrid = chunkArray(codeMatrixNumbers, 6);
 function HackScreen() {
     return (
         <div className="hack-screen">
+            <div className='screen-headers'>
             <h1 className="brand-name">NetTech</h1>
 
-            <div className="hack-window">
+            <div className="breach-time">
                 <h2 className="hack-window-title">Breach Time Remaining</h2>
+            </div>
             </div>
 
             <BreachProtocol grid={codeMatrixGrid} />
