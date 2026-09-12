@@ -232,9 +232,13 @@
 .screen-headers {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     padding: 4rem;
     gap: 4rem;
+}
+
+.breach-time {
+    display: flex;
+    justify-content: center;
 }
 
 .code-window {
@@ -301,9 +305,26 @@
     background-color: var(--ck-muted);
 }
 
+.hack-list {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 8px;
+}
+
+.hack-text {
+    padding: 1rem;
+}
+
 .hack-sequence span {
     margin-right: 6px;
     color: #ffffff;
+}
+
+.hack-sequence {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 }
 
 .hack-sequence span.matched {

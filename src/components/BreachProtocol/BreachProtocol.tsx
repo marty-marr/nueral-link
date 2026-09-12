@@ -1,21 +1,20 @@
 import { useBreachProtocol } from '../../Hooks/useBreachProtocol';
 import { hacks } from '../../data/hacks';
 import { CodeMatrix } from './CodeMatrix';
-import { Buffer } from './Buffer';
 import { HackSequenceList } from './HackSequenceList';
 
 type BreachProtocolProps = {
     grid: string[][];
 };
 
-const BUFFER_SIZE = 10;
+
 
 export function BreachProtocol({ grid }: BreachProtocolProps) {
     const { buffer, isSelectable, isUsed, completedHacks, selectCell } = useBreachProtocol(grid, hacks);
 
     return (
         <div className="breach-protocol">
-            <Buffer buffer={buffer} size={BUFFER_SIZE} />
+
 
             <div className="breach-panels">
                 <div className="code-window">

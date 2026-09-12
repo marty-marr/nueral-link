@@ -23,8 +23,10 @@ export function HackSequenceList({ hacks, bufferValues, completedHacks }: HackSe
                 </span>
                             ))}
                         </div>
+                        <div className='hack-text'>
                         <div className="hack-name">{hack.name}</div>
                         <div className="hack-description">{hack.description}</div>
+                        </div>
                     </div>
                 );
             })}
