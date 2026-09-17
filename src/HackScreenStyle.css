@@ -110,7 +110,7 @@
 
         /* --- Core palette --- */
         --ck-magenta:  #FF2E97;   /* primary / action        */
-        --ck-cyan:     #00E0FF;   /* secondary / info        */
+        --ck-cyan: #8ae3e6;   /* secondary / info        */
         --ck-canvas:   #0A0E1B;   /* app background          */
         --ck-panel:    rgba(17, 23, 38, 0.74); /* frosted glass */
 
@@ -223,10 +223,13 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--ck-muted); }
 }
 
+
 .hack-screen {
     display: flex;
     flex-direction: column;
     margin-top: 4rem;
+    position: relative;
+    z-index: 1;
 }
 
 .screen-headers {
@@ -238,7 +241,8 @@
 
 .breach-time {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    margin-left: 14rem;
 }
 
 .code-window {
@@ -291,8 +295,9 @@
 }
 
 .cell.used {
-    color: var(--ck-magenta);
-    background-color: rgb(255 255 255 / 0.04);
+    color: #ff56db;
+    background-color: var(--ck-cyan);
+    box-shadow: 0 0 10px 2px var(--ck-cyan);
     font-weight: bold;
 }
 
@@ -302,7 +307,7 @@
 }
 
 .cell.selectable:hover {
-    background-color: var(--ck-muted);
+    background-color: rgb(147 225 202);
 }
 
 .hack-list {
@@ -324,12 +329,19 @@
 .hack-sequence {
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 1rem;
 }
 
 .hack-sequence span.matched {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #00e5ff;
     text-shadow: 0 0 6px #00e5ff;
+    border: 1px solid #00e5ff;
+    width: 40px;
+    height: 40px;
 }
 
 .hack-item.completed .hack-sequence span {
