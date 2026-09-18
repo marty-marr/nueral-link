@@ -333,6 +333,11 @@
     gap: 1rem;
 }
 
+.hack-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
 .hack-sequence span.matched {
     display: flex;
     align-items: center;

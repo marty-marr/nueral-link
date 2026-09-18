@@ -1,16 +1,18 @@
-import { useBreachProtocol } from '../../Hooks/useBreachProtocol';
+
 import { hacks } from '../../data/hacks';
 import { CodeMatrix } from './CodeMatrix';
 import { HackSequenceList } from './HackSequenceList';
+import type {useBreachProtocol} from "../../Hooks/useBreachProtocol.ts";
 
 type BreachProtocolProps = {
     grid: string[][];
+    breach: ReturnType<typeof useBreachProtocol>
 };
 
 
 
-export function BreachProtocol({ grid }: BreachProtocolProps) {
-    const { buffer, isSelectable, isUsed, completedHacks, selectCell } = useBreachProtocol(grid, hacks);
+export function BreachProtocol({ grid, breach }: BreachProtocolProps) {
+    const { buffer, isSelectable, isUsed, completedHacks, selectCell } = breach;
 
     return (
         <div className="breach-protocol">

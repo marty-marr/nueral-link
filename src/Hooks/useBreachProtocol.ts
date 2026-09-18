@@ -1,7 +1,9 @@
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import type {Cell, Hack} from "../types/breach.ts";
+import {useCountDown} from "./useCountDown.ts";
 
 const BUFFER_SIZE = 10;
+const TIME_LIMIT = 40;
 
 export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
     const [buffer, setBuffer] = useState<Cell[]>([]);
@@ -11,6 +13,14 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
     const [completedHacks, setCompletedHacks] = useState<Set<string>>(new Set());
 
     const lastCell = buffer[buffer.length - 1] ?? null;
+    const {timeLeft, start: startTimer, stop: stopTimer, reset: resetTimer} = useCountDown(TIME_LIMIT);
+    const timeUp = timeLeft === 0;
+    const bufferFull = buffer.length >= BUFFER_SIZE;
+    const allComplete = completedHacks.size === hacks.length;
+
+    useEffect(() => {
+        if(bufferFull || allComplete) stopTimer();
+    }, [bufferFull, allComplete, stopTimer]);
 
     const isSelectable = useCallback(
         (row: number, col: number) => {
@@ -18,14 +28,12 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
             if (usedCells.has(key)) return false;
             if (buffer.length >= BUFFER_SIZE) return false;
             if (buffer.length === 0) return row === 0;
+            if (timeUp) return false;
 
-            if (selectionMode === 'col') {
-                // locked to a column, must move DOWN only
-                return col === lockedIndex && lastCell !== null && row > lastCell.row;
-            } else {
-                // locked to a row, must move RIGHT only
-                return row === lockedIndex && lastCell !== null && col > lastCell.col;
-            }
+            if (selectionMode === 'col') return col === lockedIndex;
+
+                return row === lockedIndex;
+
         },
         [usedCells, buffer, selectionMode, lockedIndex, lastCell]
     );
@@ -52,6 +60,7 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
     const selectCell = useCallback(
         (row: number, col: number) => {
             if (!isSelectable(row, col)) return;
+            if(buffer.length === 0) startTimer();
             const value = grid[row][col];
             const newBuffer = [...buffer, { row, col, value }];
             setBuffer(newBuffer);
@@ -74,7 +83,8 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
         setLockedIndex(0);
         setUsedCells(new Set());
         setCompletedHacks(new Set());
-    }, []);
+        resetTimer();
+    }, [resetTimer]);
 
     return {
         buffer,
@@ -84,5 +94,7 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
         selectCell,
         reset,
         bufferFull: buffer.length >= BUFFER_SIZE,
+        timeLeft,
+        timeUp,
     };
 }
