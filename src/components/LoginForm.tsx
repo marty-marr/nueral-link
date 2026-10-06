@@ -1,7 +1,8 @@
 import useLoginFormLogic from "../Hooks/loginFormLogic.ts";
+import {useEffect} from "react";
 
 
-function LoginForm() {
+function LoginForm({onComplete}: {onComplete: () => void}) {
     const {
         username,
         setUsername,
@@ -13,12 +14,20 @@ function LoginForm() {
         clearCredentials,
     } = useLoginFormLogic();
 
-    if(isAuthenticated) {
-        return <p>You are logged in!</p>
-    }
+    useEffect(() => {
+        if(isAuthenticated) {
+
+            onComplete();
+        }
+    }, [isAuthenticated, onComplete]);
+
+
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+        }}>
             <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
             <button onClick={clearCredentials}>Clear Credentials</button>

@@ -279,3 +279,55 @@
 .code-window {
   display: flex;
 }
+
+.failed-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--ck-canvas);
+  color: var(--ck-ink);
+}
+
+.failed-screen-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ck-ink);
+  padding: 2rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+}
+
+.failed-screen-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.success-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--ck-canvas);
+  color: var(--ck-ink);
+}
+
+.success-screen-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ck-ink);
+  padding: 2rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+}
+
+.success-screen-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}

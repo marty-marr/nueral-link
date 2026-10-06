@@ -11,16 +11,24 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
     const [lockedIndex, setLockedIndex] = useState<number>(0);
     const [usedCells, setUsedCells] = useState<Set<string>>(new Set());
     const [completedHacks, setCompletedHacks] = useState<Set<string>>(new Set());
+    const [failed, setFailed] = useState(false);
 
     const lastCell = buffer[buffer.length - 1] ?? null;
     const {timeLeft, start: startTimer, stop: stopTimer, reset: resetTimer} = useCountDown(TIME_LIMIT);
     const timeUp = timeLeft === 0;
     const bufferFull = buffer.length >= BUFFER_SIZE;
-    const allComplete = completedHacks.size === hacks.length;
+    const allComplete = hacks.length > 0 && completedHacks.size === hacks.length;
 
     useEffect(() => {
-        if(bufferFull || allComplete) stopTimer();
-    }, [bufferFull, allComplete, stopTimer]);
+        if(bufferFull || allComplete || timeUp) stopTimer();
+    }, [bufferFull, timeUp, allComplete, stopTimer]);
+
+    // Automatically fail when time runs out
+    useEffect(() => {
+        if (timeUp && !allComplete) {
+            setFailed(true);
+        }
+    }, [timeUp, allComplete]);
 
     const isSelectable = useCallback(
         (row: number, col: number) => {
@@ -77,12 +85,19 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
         [buffer, grid, isSelectable, selectionMode, checkSequences]
     );
 
+    const fail = useCallback(() => {
+        setFailed(true);
+        stopTimer();
+        }, [stopTimer]
+    )
+
     const reset = useCallback(() => {
         setBuffer([]);
         setSelectionMode('row');
         setLockedIndex(0);
         setUsedCells(new Set());
         setCompletedHacks(new Set());
+        setFailed(false);
         resetTimer();
     }, [resetTimer]);
 
@@ -93,8 +108,13 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
         completedHacks,
         selectCell,
         reset,
+        fail,
+
         bufferFull: buffer.length >= BUFFER_SIZE,
         timeLeft,
         timeUp,
+
+        allComplete,
+        failed
     };
 }

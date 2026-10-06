@@ -26,6 +26,7 @@ function useLoginFormLogic(): LoginFormLogic {
     const [error, setError] = useState("");
 
     function handleSubmit() {
+
         const stored = localStorage.getItem(STORAGE_KEY);
 
         if (stored === null) {
