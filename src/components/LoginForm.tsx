@@ -24,15 +24,21 @@ function LoginForm({onComplete}: {onComplete: () => void}) {
 
 
     return (
+        <div className="login-form">
         <form onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
         }}>
-            <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
-            <button onClick={clearCredentials}>Clear Credentials</button>
+            <div className="login-input-container">
+                <label className='login-form-label' htmlFor="username">Username:</label>
+            <input className="login-form-input" type="text" value={username} onChange={e => setUsername(e.target.value)} />
+                <label className='login-form-label' htmlFor="password">Password:</label>
+            <input className="login-form-input" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+            <button className="login-form-btn" onClick={clearCredentials}>Clear Credentials</button>
             {error && <p>{error}</p>}
+            </div>
         </form>
+        </div>
     )
 }
 

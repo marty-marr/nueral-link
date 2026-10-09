@@ -1,99 +1,193 @@
-import {useCallback, useEffect, useState} from "react";
-import type {Cell, Hack} from "../types/breach.ts";
-import {useCountDown} from "./useCountDown.ts";
+import { useCallback, useEffect, useState } from "react";
+import type { Cell, Hack } from "../types/breach.ts";
+import { useCountDown } from "./useCountDown.ts";
 
 const BUFFER_SIZE = 10;
 const TIME_LIMIT = 40;
 
 export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
     const [buffer, setBuffer] = useState<Cell[]>([]);
-    const [selectionMode, setSelectionMode] = useState<'row' | 'col'>('row');
+    const [selectionMode, setSelectionMode] = useState<"row" | "col">("row");
     const [lockedIndex, setLockedIndex] = useState<number>(0);
     const [usedCells, setUsedCells] = useState<Set<string>>(new Set());
     const [completedHacks, setCompletedHacks] = useState<Set<string>>(new Set());
     const [failed, setFailed] = useState(false);
 
-    const lastCell = buffer[buffer.length - 1] ?? null;
-    const {timeLeft, start: startTimer, stop: stopTimer, reset: resetTimer} = useCountDown(TIME_LIMIT);
+    const {
+        timeLeft,
+        start: startTimer,
+        stop: stopTimer,
+        reset: resetTimer,
+    } = useCountDown(TIME_LIMIT);
+
     const timeUp = timeLeft === 0;
     const bufferFull = buffer.length >= BUFFER_SIZE;
-    const allComplete = hacks.length > 0 && completedHacks.size === hacks.length;
+    const allComplete =
+        hacks.length > 0 && completedHacks.size === hacks.length;
 
+    // Stop the timer when the game ends or the buffer fills.
     useEffect(() => {
-        if(bufferFull || allComplete || timeUp) stopTimer();
-    }, [bufferFull, timeUp, allComplete, stopTimer]);
+        if (bufferFull || allComplete || timeUp || failed) {
+            stopTimer();
+        }
+    }, [bufferFull, allComplete, timeUp, failed, stopTimer]);
 
-    // Automatically fail when time runs out
+    // Fail when time runs out before all hacks are completed.
     useEffect(() => {
         if (timeUp && !allComplete) {
             setFailed(true);
         }
     }, [timeUp, allComplete]);
 
+    // Determine whether a cell can be selected.
     const isSelectable = useCallback(
         (row: number, col: number) => {
             const key = `${row}-${col}`;
+
+            if (failed || allComplete || timeUp) return false;
             if (usedCells.has(key)) return false;
             if (buffer.length >= BUFFER_SIZE) return false;
-            if (buffer.length === 0) return row === 0;
-            if (timeUp) return false;
 
-            if (selectionMode === 'col') return col === lockedIndex;
+            // The first selection must come from the top row.
+            if (buffer.length === 0) {
+                return row === 0;
+            }
 
-                return row === lockedIndex;
+            // Alternate between selecting by column and by row.
+            if (selectionMode === "col") {
+                return col === lockedIndex;
+            }
 
+            return row === lockedIndex;
         },
-        [usedCells, buffer, selectionMode, lockedIndex, lastCell]
+        [
+            failed,
+            allComplete,
+            timeUp,
+            usedCells,
+            buffer.length,
+            selectionMode,
+            lockedIndex,
+        ]
     );
 
+    // Find hacks whose sequences appear in the current buffer.
     const checkSequences = useCallback(
         (currentBuffer: string[]) => {
-            hacks.forEach((hack) => {
-                setCompletedHacks((prevCompleted) => {
-                    if (prevCompleted.has(hack.name)) return prevCompleted;
-                    const { sequence } = hack;
-                    for (let start = 0; start <= currentBuffer.length - sequence.length; start++) {
-                        const slice = currentBuffer.slice(start, start + sequence.length);
-                        if (slice.every((val, i) => val === sequence[i])) {
-                            return new Set(prevCompleted).add(hack.name);
-                        }
+            const newlyCompleted = new Set<string>();
+
+            for (const hack of hacks) {
+                if (completedHacks.has(hack.name)) continue;
+
+                const sequence = hack.sequence;
+
+                for (
+                    let start = 0;
+                    start <= currentBuffer.length - sequence.length;
+                    start++
+                ) {
+                    const slice = currentBuffer.slice(
+                        start,
+                        start + sequence.length
+                    );
+
+                    if (slice.every((value, i) => value === sequence[i])) {
+                        newlyCompleted.add(hack.name);
+                        break;
                     }
-                    return prevCompleted;
+                }
+            }
+
+            if (newlyCompleted.size > 0) {
+                setCompletedHacks((previous) => {
+                    const updated = new Set(previous);
+
+                    newlyCompleted.forEach((name) => updated.add(name));
+
+                    return updated;
                 });
-            });
+            }
+
+            return newlyCompleted;
         },
-        [hacks]
+        [hacks, completedHacks]
     );
 
+    // Select a cell, update the buffer, and check win/failure conditions.
     const selectCell = useCallback(
         (row: number, col: number) => {
             if (!isSelectable(row, col)) return;
-            if(buffer.length === 0) startTimer();
+
+            if (buffer.length === 0) {
+                startTimer();
+            }
+
             const value = grid[row][col];
             const newBuffer = [...buffer, { row, col, value }];
+
             setBuffer(newBuffer);
-            setUsedCells((prev) => new Set(prev).add(`${row}-${col}`));
-            if (selectionMode === 'row') {
-                setSelectionMode('col');
+            setUsedCells((previous) => {
+                const updated = new Set(previous);
+                updated.add(`${row}-${col}`);
+                return updated;
+            });
+
+            // Alternate selection direction.
+            if (selectionMode === "row") {
+                setSelectionMode("col");
                 setLockedIndex(col);
             } else {
-                setSelectionMode('row');
+                setSelectionMode("row");
                 setLockedIndex(row);
             }
-            checkSequences(newBuffer.map((c) => c.value));
+
+            const newlyCompleted = checkSequences(
+                newBuffer.map((cell) => cell.value)
+            );
+
+            const totalCompleted = new Set([
+                ...completedHacks,
+                ...newlyCompleted,
+            ]);
+
+            const nextBufferFull = newBuffer.length >= BUFFER_SIZE;
+            const nextAllComplete =
+                hacks.length > 0 && totalCompleted.size === hacks.length;
+
+            // The buffer is exhausted before every hack is completed.
+            if (nextBufferFull && !nextAllComplete) {
+                setFailed(true);
+                stopTimer();
+            }
+
+            // Stop the timer if every hack is now completed.
+            if (nextAllComplete) {
+                stopTimer();
+            }
         },
-        [buffer, grid, isSelectable, selectionMode, checkSequences]
+        [
+            isSelectable,
+            buffer,
+            grid,
+            startTimer,
+            selectionMode,
+            checkSequences,
+            completedHacks,
+            hacks,
+            stopTimer,
+        ]
     );
 
+    // Manually trigger failure if needed.
     const fail = useCallback(() => {
         setFailed(true);
         stopTimer();
-        }, [stopTimer]
-    )
+    }, [stopTimer]);
 
+    // Reset the game state.
     const reset = useCallback(() => {
         setBuffer([]);
-        setSelectionMode('row');
+        setSelectionMode("row");
         setLockedIndex(0);
         setUsedCells(new Set());
         setCompletedHacks(new Set());
@@ -104,17 +198,16 @@ export function useBreachProtocol(grid: string[][], hacks: Hack[]) {
     return {
         buffer,
         isSelectable,
-        isUsed: (row: number, col: number) => usedCells.has(`${row}-${col}`),
+        isUsed: (row: number, col: number) =>
+            usedCells.has(`${row}-${col}`),
         completedHacks,
         selectCell,
         reset,
         fail,
-
-        bufferFull: buffer.length >= BUFFER_SIZE,
+        bufferFull,
         timeLeft,
         timeUp,
-
         allComplete,
-        failed
+        failed,
     };
 }

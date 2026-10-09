@@ -1,138 +1,160 @@
-/* =============================================================
-   1 · RESET  (lowest priority — easy to override everywhere)
-   ============================================================= */
-@layer reset {
 
-  /* Border-box is the single best ergonomics fix in CSS:
-     padding + border count *inside* the declared width. */
-  *, *::before, *::after {
+/* =============================================================
+   CYBERKIT — GLOBAL TYPOGRAPHY
+   ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+
+/* =============================================================
+   1 · RESET
+   ============================================================= */
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
-  /* Wipe inherited margins so every gap is a decision, not a default. */
   * {
     margin: 0;
   }
 
-  /* Backgrounds shouldn't tile by default — you override that far
-     more often than you rely on it. */
   *:where(:not(fieldset, progress, meter)) {
     background-repeat: no-repeat;
     background-origin: border-box;
   }
 
   html {
-    /* Allow % heights to resolve, and stop mobile Safari/Chrome from
-       silently inflating your type. */
     block-size: 100%;
     -webkit-text-size-adjust: none;
     text-size-adjust: none;
   }
 
-  /* Smooth scroll + keyword-size animation only when motion is welcome. */
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
-      interpolate-size: allow-keywords; /* animate to auto / fit-content */
+      interpolate-size: allow-keywords;
     }
   }
 
   body {
     min-height: 100vh;
-    min-height: 100svh;          /* dynamic viewport: respects mobile chrome */
-    line-height: 1.5;            /* WCAG-friendly body rhythm */
+    min-height: 100svh;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  /* Media behaves like blocks and never overflows its container. */
-  img, picture, video, canvas, svg {
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
     display: block;
     max-width: 100%;
   }
 
-  /* Broken images degrade gracefully instead of shouting. */
   img {
     font-style: italic;
   }
 
-  /* Form controls inherit your type instead of the browser's. */
-  input, button, textarea, select {
+  input,
+  button,
+  textarea,
+  select {
     font: inherit;
     color: inherit;
     letter-spacing: inherit;
   }
 
-  /* A textarea with no rows shouldn't be a tiny sliver. */
   textarea:not([rows]) {
     min-height: 8em;
   }
 
-  /* Long words / URLs wrap instead of blowing out the layout,
-     and headings/paragraphs wrap intelligently. */
-  p, h1, h2, h3, h4, h5, h6, li, dd, dt, blockquote, figcaption {
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  li,
+  dd,
+  dt,
+  blockquote,
+  figcaption {
     overflow-wrap: break-word;
   }
-  p, li, figcaption {
-    text-wrap: pretty;   /* avoids ugly single-word last lines */
+
+  p,
+  li,
+  figcaption {
+    text-wrap: pretty;
   }
-  h1, h2, h3, h4, h5, h6 {
-    text-wrap: balance;  /* even line lengths on headings */
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
     line-height: 1.1;
   }
 
-  /* Keep list semantics for screen readers — only opt out when
-     you explicitly mark a list as role="list". */
-  ul[role='list'], ol[role='list'] {
+  ul[role="list"],
+  ol[role="list"] {
     list-style: none;
     padding: 0;
   }
 
-  /* Anchored jumps don't slam content against the top edge. */
   :target {
     scroll-margin-block: 5ex;
   }
 
-  /* React / Next roots get their own stacking context so portals,
-     modals, and z-index stay predictable. */
-  #root, #__next {
+  #root,
+  #__next {
     isolation: isolate;
   }
 }
 
+
 /* =============================================================
-   2 · TOKENS  (the locked CyberKit system — single source of truth)
+   2 · TOKENS
    ============================================================= */
+
 @layer tokens {
   :root {
     color-scheme: dark;
 
-    /* --- Core palette --- */
-    --ck-magenta:  #FF2E97;   /* primary / action        */
-    --ck-cyan:     #00E0FF;   /* secondary / info        */
-    --ck-canvas:   #0A0E1B;   /* app background          */
-    --ck-panel:    rgba(17, 23, 38, 0.74); /* frosted glass */
+    /* Core palette */
+    --ck-magenta: #FF2E97;
+    --ck-cyan: #00E0FF;
+    --ck-canvas: #0A0E1B;
+    --ck-panel: rgba(17, 23, 38, 0.74);
 
-    /* --- Ink & structure --- */
-    --ck-ink:      #E7ECF6;   /* primary text            */
-    --ck-muted: #c29cec;   /* labels / secondary text */
-    --ck-line:     rgba(255, 255, 255, 0.08); /* hairlines */
+    /* Text and structure */
+    --ck-ink: #E7ECF6;
+    --ck-muted: #c29cec;
+    --ck-line: rgba(255, 255, 255, 0.08);
 
-    /* --- Type --- */
-    --ck-font-sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    --ck-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    /* Typography */
+    --ck-font-display: "Orbitron", sans-serif;
+    --ck-font-sans: "Rajdhani", system-ui, sans-serif;
+    --ck-font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-    /* Fluid-ish type scale (rem-based, 1rem = 16px root) */
-    --ck-text-xs:   0.75rem;
-    --ck-text-sm:   0.875rem;
+    --ck-text-xs: 0.75rem;
+    --ck-text-sm: 0.875rem;
     --ck-text-base: 1rem;
-    --ck-text-lg:   1.25rem;
-    --ck-text-xl:   1.75rem;
-    --ck-text-2xl:  2.5rem;
-    --ck-text-3xl:  clamp(2rem, 5vw, 3.25rem);
+    --ck-text-lg: 1.25rem;
+    --ck-text-xl: 1.75rem;
+    --ck-text-2xl: 2.5rem;
+    --ck-text-3xl: clamp(2rem, 5vw, 3.25rem);
 
-    /* --- Spacing scale --- */
+    /* Spacing */
     --ck-space-1: 0.25rem;
     --ck-space-2: 0.5rem;
     --ck-space-3: 0.75rem;
@@ -141,193 +163,758 @@
     --ck-space-8: 2rem;
     --ck-space-12: 3rem;
 
-    /* --- Signature rules, as tokens --- */
-    --ck-radius-panel:  0;      /* panels are square, framed by brackets */
-    --ck-radius-button: 6px;    /* buttons round to 6px                 */
-    --ck-radius-badge:  2px;    /* badges almost-sharp                  */
-    --ck-blur:          3px;    /* frosted-panel backdrop blur          */
-    --ck-bracket:       var(--ck-magenta); /* mandatory corner brackets */
-    --ck-glow-magenta:  0 0 16px rgba(255, 46, 151, 0.5);
-    --ck-glow-cyan:     0 0 14px rgba(0, 224, 255, 0.45);
-    --ck-focus-ring:    var(--ck-cyan);
+    /* Surfaces and effects */
+    --ck-radius-panel: 0;
+    --ck-radius-button: 4px;
+    --ck-radius-badge: 2px;
+    --ck-blur: 3px;
+
+    --ck-bracket: var(--ck-magenta);
+
+    --ck-glow-magenta:
+            0 0 16px rgba(255, 46, 151, 0.30);
+
+    --ck-glow-cyan:
+            0 0 14px rgba(0, 224, 255, 0.25);
+
+    --ck-focus-ring: var(--ck-cyan);
+
+    /* Shared gradient treatments */
+    --ck-gradient:
+            linear-gradient(
+                    110deg,
+                    rgba(255, 46, 151, 0.22) 0%,
+                    rgba(138, 227, 230, 0.13) 100%
+            );
+
+    --ck-gradient-border:
+            linear-gradient(
+                    110deg,
+                    var(--ck-magenta),
+                    rgba(138, 227, 230, 0.75),
+                    var(--ck-cyan)
+            );
+
+    --ck-panel-gradient:
+            linear-gradient(
+                    135deg,
+                    rgba(255, 46, 151, 0.07),
+                    transparent 40%,
+                    rgba(0, 224, 255, 0.06)
+            );
   }
 }
 
-/* =============================================================
-   3 · BASE  (branded defaults — this is what makes it feel "you")
-   ============================================================= */
-@layer base {
 
+/* =============================================================
+   3 · BASE
+   ============================================================= */
+
+@layer base {
   body {
     background-color: var(--ck-canvas);
     color: var(--ck-ink);
     font-family: var(--ck-font-sans);
     font-size: var(--ck-text-base);
-    /* Flat canvas — no grid background, per the CyberKit spec. */
   }
 
-  h1 { font-size: var(--ck-text-3xl); }
-  h2 { font-size: var(--ck-text-2xl); }
-  h3 { font-size: var(--ck-text-xl); }
-  h1, h2, h3, h4, h5, h6 {
+  h1 {
+    font-size: var(--ck-text-3xl);
+  }
+
+  h2 {
+    font-size: var(--ck-text-2xl);
+  }
+
+  h3 {
+    font-size: var(--ck-text-xl);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--ck-font-display);
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
-  /* Technical text is monospace by default — labels, values, code. */
-  code, kbd, samp, pre {
+  code,
+  kbd,
+  samp,
+  pre {
     font-family: var(--ck-font-mono);
     font-size: 0.95em;
   }
 
-  /* Links: magenta at rest, cyan on hover — the two brand accents. */
   a {
     color: var(--ck-magenta);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.18em;
-    transition: color 120ms ease;
+    transition: color 180ms ease;
   }
-  a:hover { color: var(--ck-cyan); }
 
-  strong, b { font-weight: 600; }
-  small { color: var(--ck-muted); font-size: var(--ck-text-sm); }
+  a:hover {
+    color: var(--ck-cyan);
+  }
+
+  strong,
+  b {
+    font-weight: 700;
+  }
+
+  small {
+    color: var(--ck-muted);
+    font-size: var(--ck-text-sm);
+  }
 
   hr {
     border: none;
     border-top: 1px solid var(--ck-line);
   }
 
-  /* Selection uses the primary accent — a small personal signature. */
   ::selection {
     background: var(--ck-magenta);
     color: var(--ck-canvas);
   }
 
-  /* Visible, on-brand keyboard focus (accessibility floor). */
   :focus-visible {
     outline: 2px solid var(--ck-focus-ring);
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 
-  /* Themed scrollbars to finish the look. */
   * {
     scrollbar-color: var(--ck-muted) transparent;
     scrollbar-width: thin;
   }
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: transparent; }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   ::-webkit-scrollbar-thumb {
     background: rgba(117, 131, 155, 0.5);
     border-radius: 6px;
   }
-  ::-webkit-scrollbar-thumb:hover { background: var(--ck-muted); }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ck-muted);
+  }
 }
 
 
-.welcome-screen {
+/* =============================================================
+   4 · SHARED SCREEN BACKGROUND
+   ============================================================= */
+
+.welcome-screen,
+.failed-screen,
+.success-screen,
+.login-form {
+  position: relative;
+  isolation: isolate;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: var(--ck-canvas);
+
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(1.25rem, 4vw, 3rem);
+
+  overflow: hidden;
+  background: var(--ck-canvas);
   color: var(--ck-ink);
 }
 
-.welcome-screen-content {
+/* Soft atmospheric color, similar to the breach timer gradient. */
+.welcome-screen::before,
+.failed-screen::before,
+.success-screen::before,
+.login-form::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+          radial-gradient(
+                  ellipse at 15% 20%,
+                  rgba(255, 46, 151, 0.12),
+                  transparent 42%
+          ),
+          radial-gradient(
+                  ellipse at 85% 80%,
+                  rgba(0, 224, 255, 0.10),
+                  transparent 45%
+          ),
+          linear-gradient(
+                  135deg,
+                  rgba(17, 23, 38, 0.2),
+                  transparent 60%
+          );
+}
+
+/* Shared panel structure */
+.welcome-screen-content,
+.failed-screen-content,
+.success-screen-content,
+.login-input-container {
+  position: relative;
+  isolation: isolate;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--ck-ink);
-  padding: 2rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.3s ease;
+  gap: 1.25rem;
+
+  width: min(100%, 560px);
+  padding: clamp(1.5rem, 5vw, 3rem);
+
+  background:
+          var(--ck-panel-gradient),
+          var(--ck-panel);
+
+  border: 1px solid rgba(231, 236, 246, 0.18);
+  border-radius: var(--ck-radius-panel);
+
+  -webkit-backdrop-filter: blur(var(--ck-blur));
+  backdrop-filter: blur(var(--ck-blur));
+
+  box-shadow:
+          0 18px 55px rgba(0, 0, 0, 0.24),
+          inset 0 0 30px rgba(138, 227, 230, 0.025);
 }
 
-.welcome-screen-title {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+/* Thin gradient accent along the top edge. */
+.welcome-screen-content::before,
+.failed-screen-content::before,
+.success-screen-content::before,
+.login-input-container::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+
+  background: var(--ck-gradient-border);
+  opacity: 0.9;
+  pointer-events: none;
 }
 
-.enter-button {
-  background-color: var(--ck-magenta);
-  opacity: 0.8;
-  color: var(--ck-canvas);
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+/* Subtle corner markers */
+.welcome-screen-content::after,
+.failed-screen-content::after,
+.success-screen-content::after,
+.login-input-container::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+          linear-gradient(var(--ck-magenta), var(--ck-magenta))
+          top left / 16px 1px no-repeat,
+          linear-gradient(var(--ck-magenta), var(--ck-magenta))
+          top left / 1px 16px no-repeat,
+          linear-gradient(var(--ck-cyan), var(--ck-cyan))
+          bottom right / 16px 1px no-repeat,
+          linear-gradient(var(--ck-cyan), var(--ck-cyan))
+          bottom right / 1px 16px no-repeat;
+
+  opacity: 0.75;
+}
+
+
+/* =============================================================
+   5 · DISPLAY HEADINGS
+   ============================================================= */
+
+.welcome-screen-title,
+.failed-screen-title,
+.success-screen-title {
+  position: relative;
+  margin-bottom: 0.5rem;
+
+  font-family: var(--ck-font-display);
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+
+  color: var(--ck-ink);
+
+  text-shadow:
+          0 0 18px rgba(0, 224, 255, 0.12);
+}
+
+/* Small system-style subtitle */
+.welcome-screen-content p,
+.failed-screen-content p,
+.success-screen-content p {
+  max-width: 42ch;
+  font-family: var(--ck-font-sans);
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.65;
+  text-align: center;
+  color: rgba(231, 236, 246, 0.78);
+}
+
+/* Optional accent class for a span inside a heading */
+.heading-accent {
+  color: var(--ck-magenta);
+  text-shadow: var(--ck-glow-magenta);
+}
+
+.heading-cyan {
+  color: var(--ck-cyan);
+  text-shadow: var(--ck-glow-cyan);
+}
+
+/* Optional small uppercase metadata */
+.system-label {
+  font-family: var(--ck-font-mono);
+  font-size: var(--ck-text-xs);
+  letter-spacing: 0.14em;
+  line-height: 1.6;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--ck-cyan);
+}
+
+
+/* =============================================================
+   6 · BUTTONS
+   ============================================================= */
+
+.enter-button,
+.login-form-btn,
+.welcome-screen-content button,
+.failed-screen-content button,
+.success-screen-content button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+
+  min-height: 46px;
+  padding: 0.8rem 1.5rem;
+
+  border: 1px solid var(--ck-magenta);
+  border-radius: var(--ck-radius-button);
+
+  background:
+          linear-gradient(
+                  110deg,
+                  rgba(255, 46, 151, 0.22),
+                  rgba(0, 224, 255, 0.10)
+          );
+
+  color: var(--ck-ink);
+
+  font-family: var(--ck-font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+
   cursor: pointer;
-  transition: background-color 0.3s ease;
+
+  box-shadow:
+          inset 0 0 16px rgba(255, 46, 151, 0.035);
+
+  transition:
+          background 180ms ease,
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          color 180ms ease,
+          transform 180ms ease;
 }
+
+/* Moving sheen */
+.enter-button::before,
+.login-form-btn::before,
+.welcome-screen-content button::before,
+.failed-screen-content button::before,
+.success-screen-content button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background: linear-gradient(
+          110deg,
+          transparent 15%,
+          rgba(255, 255, 255, 0.09) 50%,
+          transparent 85%
+  );
+
+  transform: translateX(-120%);
+  transition: transform 350ms ease;
+  pointer-events: none;
+}
+
+.enter-button:hover,
+.login-form-btn:hover,
+.welcome-screen-content button:hover,
+.failed-screen-content button:hover,
+.success-screen-content button:hover {
+  border-color: var(--ck-cyan);
+
+  background:
+          linear-gradient(
+                  110deg,
+                  rgba(255, 46, 151, 0.30),
+                  rgba(0, 224, 255, 0.20)
+          );
+
+  box-shadow:
+          0 0 14px rgba(255, 46, 151, 0.13),
+          0 0 18px rgba(0, 224, 255, 0.08),
+          inset 0 0 18px rgba(0, 224, 255, 0.06);
+
+  color: #FFFFFF;
+}
+
+.enter-button:hover::before,
+.login-form-btn:hover::before,
+.welcome-screen-content button:hover::before,
+.failed-screen-content button:hover::before,
+.success-screen-content button:hover::before {
+  transform: translateX(120%);
+}
+
+.enter-button:active,
+.login-form-btn:active,
+.welcome-screen-content button:active,
+.failed-screen-content button:active,
+.success-screen-content button:active {
+  transform: translateY(1px);
+}
+
+.enter-button:focus-visible,
+.login-form-btn:focus-visible,
+.welcome-screen-content button:focus-visible,
+.failed-screen-content button:focus-visible,
+.success-screen-content button:focus-visible {
+  outline: 2px solid var(--ck-cyan);
+  outline-offset: 4px;
+}
+
+.enter-button:disabled,
+.login-form-btn:disabled,
+.welcome-screen-content button:disabled,
+.failed-screen-content button:disabled,
+.success-screen-content button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Optional alternate style for secondary buttons */
+.cyber-button-secondary {
+  border-color: rgba(0, 224, 255, 0.55);
+  background: rgba(0, 224, 255, 0.045);
+  color: var(--ck-cyan);
+}
+
+.cyber-button-secondary:hover {
+  border-color: var(--ck-cyan);
+  background: rgba(0, 224, 255, 0.12);
+}
+
+
+/* =============================================================
+   7 · LOGIN FORM
+   ============================================================= */
+
+.login-form {
+  flex-direction: column;
+}
+
+.login-input-container {
+  width: min(100%, 480px);
+  align-items: stretch;
+  gap: 1rem;
+}
+
+/* Login form heading */
+.login-input-container h1,
+.login-input-container h2,
+.login-input-container h3 {
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* Labels, if present */
+.login-input-container label {
+  display: block;
+  margin-bottom: 0.35rem;
+
+  color: var(--ck-cyan);
+  font-family: var(--ck-font-mono);
+  font-size: var(--ck-text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Text fields */
+.login-form-input,
+.login-input-container input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.75rem 0.9rem;
+
+  border: 1px solid rgba(231, 236, 246, 0.18);
+  border-radius: 3px;
+
+  background: rgba(5, 9, 20, 0.72);
+  color: var(--ck-ink);
+
+  font-family: var(--ck-font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.025em;
+
+  outline: none;
+
+  transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          background 180ms ease;
+}
+
+.login-form-input::placeholder,
+.login-input-container input::placeholder {
+  color: rgba(194, 156, 236, 0.58);
+}
+
+.login-form-input:hover,
+.login-input-container input:hover {
+  border-color: rgba(0, 224, 255, 0.45);
+}
+
+.login-form-input:focus,
+.login-input-container input:focus {
+  border-color: var(--ck-cyan);
+  background: rgba(5, 9, 20, 0.92);
+
+  box-shadow:
+          0 0 0 1px rgba(0, 224, 255, 0.12),
+          0 0 16px rgba(0, 224, 255, 0.08);
+}
+
+.login-form-input:focus-visible,
+.login-input-container input:focus-visible {
+  outline: 1px solid var(--ck-cyan);
+  outline-offset: 2px;
+}
+
+/* Buttons inside the login panel fill the available width */
+.login-input-container .login-form-btn,
+.login-input-container button {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+
+/* =============================================================
+   8 · LOADING / INJECTION PROGRESS
+   ============================================================= */
 
 .progress-track {
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: #14151f;
+  position: relative;
+  isolation: isolate;
   overflow: hidden;
+
+  width: 100%;
+  height: 7px;
+
+  border: 1px solid rgba(231, 236, 246, 0.12);
+  border-radius: 2px;
+
+  background: rgba(5, 9, 20, 0.9);
+
+  box-shadow:
+          inset 0 0 8px rgba(0, 0, 0, 0.5);
 }
 
 .progress-fill {
+  position: relative;
   height: 100%;
-  border-radius: 3px;
-  background: linear-gradient(90deg, #bfffff 0%, #ff8bc5 100%);
-  transition: width 0.1s linear;
+  border-radius: 1px;
+
+  background: linear-gradient(
+          90deg,
+          var(--ck-magenta) 0%,
+          #FF8BC5 40%,
+          #8AE3E6 75%,
+          var(--ck-cyan) 100%
+  );
+
+  box-shadow:
+          0 0 10px rgba(255, 46, 151, 0.25),
+          0 0 12px rgba(0, 224, 255, 0.22);
+
+  transition: width 100ms linear;
 }
+
+/* Optional metadata for loading progress */
+.progress-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  width: 100%;
+
+  font-family: var(--ck-font-mono);
+  font-size: var(--ck-text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ck-cyan);
+}
+
+
+/* =============================================================
+   9 · SUCCESS STATE
+   ============================================================= */
+
+.success-screen-content {
+  border-color: rgba(0, 224, 255, 0.42);
+
+  box-shadow:
+          0 18px 55px rgba(0, 0, 0, 0.24),
+          0 0 28px rgba(0, 224, 255, 0.06),
+          inset 0 0 30px rgba(0, 224, 255, 0.035);
+}
+
+.success-screen-content::before {
+  background: linear-gradient(
+          90deg,
+          transparent,
+          var(--ck-cyan),
+          rgba(138, 227, 230, 0.4),
+          transparent
+  );
+}
+
+.success-screen-title {
+  color: var(--ck-cyan);
+  text-shadow:
+          0 0 12px rgba(0, 224, 255, 0.24),
+          0 0 28px rgba(0, 224, 255, 0.10);
+}
+
+
+/* =============================================================
+   10 · FAILURE STATE
+   ============================================================= */
+
+.failed-screen-content {
+  border-color: rgba(255, 46, 151, 0.42);
+
+  box-shadow:
+          0 18px 55px rgba(0, 0, 0, 0.24),
+          0 0 28px rgba(255, 46, 151, 0.055),
+          inset 0 0 30px rgba(255, 46, 151, 0.025);
+}
+
+.failed-screen-content::before {
+  background: linear-gradient(
+          90deg,
+          transparent,
+          var(--ck-magenta),
+          rgba(255, 139, 197, 0.45),
+          transparent
+  );
+}
+
+.failed-screen-title {
+  color: var(--ck-magenta);
+  text-shadow:
+          0 0 12px rgba(255, 46, 151, 0.28),
+          0 0 28px rgba(255, 46, 151, 0.12);
+}
+
+
+/* =============================================================
+   11 · EXISTING HACK SCREEN SUPPORT
+   ============================================================= */
 
 .code-window {
   display: flex;
 }
 
-.failed-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: var(--ck-canvas);
-  color: var(--ck-ink);
+
+/* =============================================================
+   12 · RESPONSIVE LAYOUT
+   ============================================================= */
+
+@media (max-width: 600px) {
+  .welcome-screen,
+  .failed-screen,
+  .success-screen,
+  .login-form {
+    padding: 1rem;
+  }
+
+  .welcome-screen-content,
+  .failed-screen-content,
+  .success-screen-content,
+  .login-input-container {
+    padding: 1.75rem 1.25rem;
+    gap: 1rem;
+  }
+
+  .welcome-screen-title,
+  .failed-screen-title,
+  .success-screen-title {
+    font-size: clamp(1.4rem, 7vw, 2rem);
+    letter-spacing: 0.045em;
+  }
+
+  .enter-button,
+  .login-form-btn,
+  .welcome-screen-content button,
+  .failed-screen-content button,
+  .success-screen-content button {
+    width: 100%;
+    min-height: 48px;
+  }
 }
 
-.failed-screen-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--ck-ink);
-  padding: 2rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.3s ease;
-}
 
-.failed-screen-title {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-}
+/* =============================================================
+   13 · REDUCED MOTION
+   ============================================================= */
 
-.success-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: var(--ck-canvas);
-  color: var(--ck-ink);
-}
-
-.success-screen-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--ck-ink);
-  padding: 2rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.3s ease;
-}
-
-.success-screen-title {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
